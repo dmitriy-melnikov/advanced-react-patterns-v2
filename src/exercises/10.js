@@ -1,5 +1,3 @@
-// control props
-
 import React from 'react'
 import {Switch} from '../switch'
 
@@ -9,31 +7,29 @@ import {Switch} from '../switch'
 
 class Toggle extends React.Component {
   state = {on: false}
-  // 🐨 let's add a function that can determine whether
-  // the on prop is controlled. Call it `isControlled`.
-  // It can accept a string called `prop` and should return
-  // true if that prop is controlled
-  // 💰 this.props[prop] !== undefined
-  //
-  // 🐨 Now let's add a function that can return the state
-  // whether it's coming from this.state or this.props
-  // Call it `getState` and have it return on from
-  // state if it's not controlled or props if it is.
+
+  isControlled = () => {
+    return this.props.on !== undefined
+  }
+  getState = () => {
+    return {
+      on: this.isControlled() ? this.props.on : this.state.on
+    }
+  }
+
   toggle = () => {
-    // 🐨 if the toggle is controlled, then we shouldn't
-    // be updating state. Instead we should just call
-    // `this.props.onToggle` with what the state should be
+    if (this.isControlled()) {
+      this.props.onToggle(!this.getState().on);
+    } else {
     this.setState(
       ({on}) => ({on: !on}),
       () => {
-        this.props.onToggle(this.state.on)
+        this.props.onToggle(this.getState().on)
       },
-    )
+    )}
   }
   render() {
-    // 🐨 rather than getting state from this.state,
-    // let's use our `getState` method.
-    const {on} = this.state
+    const {on} = this.getState();
     return <Switch on={on} onClick={this.toggle} />
   }
 }
@@ -47,9 +43,6 @@ class Toggle extends React.Component {
 // 💯 Add support for a `type` property in the `changes` you pass to
 // `onStateChange` so consumers can differentiate different state changes.
 
-// Don't make changes to the Usage component. It's here to show you how your
-// component is intended to be used and is used in the tests.
-// You can make all the tests pass by updating the Toggle component.
 class Usage extends React.Component {
   state = {bothOn: false}
   handleToggle = on => {
