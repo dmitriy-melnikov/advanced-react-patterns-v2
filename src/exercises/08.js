@@ -25,8 +25,7 @@ class Toggle extends React.Component {
   static defaultProps = {
     initialOn: false,
     onReset: () => {},
-    // 🐨 let's add a default stateReducer here. It should return
-    // the changes object as it is passed.
+    stateReducer: (state, changes) => changes
   }
   initialState = {on: this.props.initialOn}
   state = this.initialState

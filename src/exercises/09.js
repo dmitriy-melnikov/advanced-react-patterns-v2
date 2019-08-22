@@ -1,5 +1,3 @@
-// state reducer with types
-
 import React from 'react'
 import {Switch} from '../switch'
 
@@ -12,8 +10,14 @@ class Toggle extends React.Component {
     onReset: () => {},
     stateReducer: (state, changes) => changes,
   }
+  static stateChangeTypes = {
+    toggle: '__Toggle__',
+    reset: '__Reset__'
+  }
+
   initialState = {on: this.props.initialOn}
   state = this.initialState
+
   internalSetState(changes, callback) {
     this.setState(state => {
       // handle function setState call
@@ -26,27 +30,28 @@ class Toggle extends React.Component {
       // property and return an object only if the state changes
       // 💰 to remove the `type`, you can destructure the changes:
       // `{type, ...c}`
-      return Object.keys(reducedChanges).length
-        ? reducedChanges
+      const { type: ignoredType, ...remainingChanges } = reducedChanges;
+      return Object.keys(remainingChanges).length
+        ? remainingChanges
         : null
     }, callback)
   }
   reset = () =>
     // 🐨 add a `type` string property to this call
-    this.internalSetState(this.initialState, () =>
+    this.internalSetState({type: Toggle.stateChangeTypes.reset, ...this.initialState}, () =>
       this.props.onReset(this.state.on),
     )
   // 🐨 accept a `type` property here and give it a default value
-  toggle = () =>
+  toggle = ({type = Toggle.stateChangeTypes.toggle} = {}) =>
     this.internalSetState(
       // pass the `type` string to this object
-      ({on}) => ({on: !on}),
+      ({on}) => ({type, on: !on}),
       () => this.props.onToggle(this.state.on),
     )
   getTogglerProps = ({onClick, ...props} = {}) => ({
     // 🐨 change `this.toggle` to `() => this.toggle()`
     // to avoid passing the click event to this.toggle.
-    onClick: callAll(onClick, this.toggle),
+    onClick: callAll(onClick, () => this.toggle()),
     'aria-pressed': this.state.on,
     ...props,
   })
@@ -87,6 +92,9 @@ class Usage extends React.Component {
     if (changes.type === 'forced') {
       return changes
     }
+    /*if (changes.type === Toggle.stateChangeTypes.toggle) {
+      return {on: false}
+    }*/
     if (this.state.timesClicked >= 4) {
       return {...changes, on: false}
     }
