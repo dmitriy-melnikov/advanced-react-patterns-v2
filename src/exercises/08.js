@@ -1,5 +1,3 @@
-// state reducer
-
 import React from 'react'
 import {Switch} from '../switch'
 
@@ -32,6 +30,13 @@ class Toggle extends React.Component {
   }
   initialState = {on: this.props.initialOn}
   state = this.initialState
+  setState = (changes, callback) => {
+    super.setState(currentState => {
+      const changesObject = typeof changes === 'function' ? changes(currentState) : changes;
+      const reducedChanges = this.props.stateReducer(currentState, changesObject) || {};
+      return Object.keys(reducedChanges).length ? reducedChanges : null;
+    }, callback)
+  }
   // 🐨 let's add a method here called `internalSetState`. It will simulate
   // the same API as `setState(updater, callback)`:
   // - updater: (changes object or function that returns the changes object)
@@ -46,13 +51,13 @@ class Toggle extends React.Component {
   //
   // 🐨 Pass the callback to the 2nd argument to this.setState
   //
-  // 🐨 Finally, update all pre-existing instances of this.setState
-  // to this.internalSetState
+
   reset = () =>
     this.setState(this.initialState, () =>
       this.props.onReset(this.state.on),
     )
   toggle = () =>
+    // 🐨 Finally, update all pre-existing instances of this.setState to this.internalSetState
     this.setState(
       ({on}) => ({on: !on}),
       () => this.props.onToggle(this.state.on),
