@@ -1,54 +1,68 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Switch} from '../switch'
 
-class Toggle extends React.Component {
-  state = {on: false};
-  toggle = () =>
-    this.setState(
-      ({on}) => ({on: !on}),
-      () => this.props.onToggle(this.state.on),
-    );
+const Toggle = (props) => {
+	const [on, setOn] = useState(false);
+	useEffect(() => props.onToggle(on));
+	const toggle = () => setOn(!on);
 
-  getStateAndHelpers() {
-    return {
-      on: this.state.on,
-      toggle: this.toggle,
+	const getStateAndHelpers = () => {
+		return {
+			on,
+			toggle,
 			togglerProps: {
-        'aria-pressed': this.state.on,
-        onClick: this.toggle
-      }
-    }
-  }
-  render() {
-    return this.props.children(this.getStateAndHelpers())
-  }
-}
+				'aria-expanded': on,
+				onClick: toggle
+			}
+		}
+	};
+	return (props.children(getStateAndHelpers()));
 
+};
+
+const renderToogle = ({on, togglerProps}) => (
+	<div>
+		<Switch on={on} {...togglerProps} />
+		<hr />
+		<button
+			aria-label="custom-button"
+			{...togglerProps}
+			/*onClick={
+				(...args) => {
+					togglerProps.onClick(...args);
+					console.log('clicked')
+				}
+			}*/
+		>
+			{on ? 'on' : 'off'}
+		</button>
+	</div>
+);
+/*<div>
+		<Switch on={on} {...togglerProps}  />
+		<hr/>
+		<button
+			aria-label="custom-button"
+			{...togglerProps}
+			onClick={(...args) => {
+				togglerProps.onClick(...args);
+				console.log('clicked!')
+			}}
+		>
+			{on ? 'on' : 'off'}
+		</button>
+	</div>*/
 
 function Usage({
-  onToggle = (...args) => console.log('onToggle', ...args),
-}) {
-  return (
-    <Toggle onToggle={onToggle}>
-      {({on, togglerProps}) => (
-        <div>
-          <Switch on={on} {...togglerProps}  />
-          <hr />
-          <button
-            aria-label="custom-button"
-						{...togglerProps}
-            onClick={(...args) => {
-              togglerProps.onClick(...args);
-              console.log('clicked!')
-						}}
-            >
-            {on ? 'on' : 'off'}
-          </button>
-        </div>
-      )}
-    </Toggle>
-  )
+								 onToggle = (...args) => console.log('onToggle', ...args),
+							 }) {
+	return (
+		<Toggle onToggle={onToggle}>
+			{renderToogle}
+		</Toggle>
+	)
 }
+
 Usage.title = 'Prop Collections';
 
 export {Toggle, Usage as default}
