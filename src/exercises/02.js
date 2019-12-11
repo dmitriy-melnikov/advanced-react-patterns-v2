@@ -1,13 +1,13 @@
 import React, {cloneElement, Children, useEffect, useState} from 'react'
 import { Switch } from '../switch'
 
-const Toggle = (props) => {
+const Toggle = ({onToggle, children}) => {
   const [on, setOn] = useState(false)
-  useEffect(() => props.onToggle(on))
+  useEffect(() => onToggle(on))
   const toggle = () => setOn(!on);
 
   return (
-    Children.map(this.props.children, (childElement => {
+    Children.map(children, (childElement => {
       return cloneElement(childElement, {on, toggle})
     }))
   )

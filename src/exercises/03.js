@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect, createContext} from 'react'
 import {Switch} from '../switch'
 
 // Right now our component can only clone and pass props to immediate children.
@@ -43,39 +43,36 @@ import {Switch} from '../switch'
 
 // 🐨 create a ToggleContext with React.createContext here
 
-const ToggleContext = React.createContext({
-	on: false,
-	toggle: () => {
-	}
-});
+const ToggleContext = createContext({
+  on: false,
+  toggle: () => {
+  },
+})
 
-class Toggle extends React.Component {
+const Toggle = (props) => {
+  const [on, setOn] = useState(false)
 
-	static On = ({children}) => <ToggleContext.Consumer>{contextValue => (contextValue.on ? children : null)}</ToggleContext.Consumer>;
-	static Off = ({children}) => <ToggleContext.Consumer>{contextValue => (contextValue.on ? null : children)}</ToggleContext.Consumer>;
-	static Button = props => <ToggleContext.Consumer>
-		{contextValue => (<Switch on={contextValue.on} onClick={contextValue.toggle} {...props}/>)}
-	</ToggleContext.Consumer>;
+  useEffect(() => props.onToggle(on))
+  const toggle = () => setOn(!on)
+  //const [ toggl ] = useState(toggle)
+  //state = {on: false, toggle: this.toggle};
 
+  return (
+    <ToggleContext.Provider value={{on, toggle}}
+    >
+      {props.children}
+    </ToggleContext.Provider>
+  )
 
-
-	toggle = () =>
-		this.setState(
-			({on}) => ({on: !on}),
-			() => this.props.onToggle(this.state.on),
-		);
-
-	state = {on: false, toggle: this.toggle};
-
-	render() {
-		return (
-			<ToggleContext.Provider value={this.state}
-			>
-				{this.props.children}
-			</ToggleContext.Provider>
-		)
-	}
 }
+
+Toggle.On = ({children}) =>
+  <ToggleContext.Consumer>{contextValue => (contextValue.on ? children : null)}</ToggleContext.Consumer>
+Toggle.Off = ({children}) =>
+  <ToggleContext.Consumer>{contextValue => (contextValue.on ? null : children)}</ToggleContext.Consumer>
+Toggle.Button = props => <ToggleContext.Consumer>
+  {contextValue => (<Switch on={contextValue.on} onClick={contextValue.toggle} {...props}/>)}
+</ToggleContext.Consumer>
 
 // 💯 Extra credit: rather than having a default value, make it so the consumer
 // will throw an error if there's no context value to make sure people don't
@@ -86,17 +83,17 @@ class Toggle extends React.Component {
 
 
 function Usage({
-								 onToggle = (...args) => console.log('onToggle', ...args),
-							 }) {
-	return (
-		<Toggle onToggle={onToggle}>
-			<Toggle.On>The button is on</Toggle.On>
-			<Toggle.Off>The button is off</Toggle.Off>
-			<div>
-				<Toggle.Button/>
-			</div>
-		</Toggle>
-	)
+                 onToggle = (...args) => console.log('onToggle', ...args),
+               }) {
+  return (
+    <Toggle onToggle={onToggle}>
+      <Toggle.On>The button is on</Toggle.On>
+      <Toggle.Off>The button is off</Toggle.Off>
+      <div>
+        <Toggle.Button/>
+      </div>
+    </Toggle>
+  )
 }
 
 Usage.title = 'Flexible Compound Components'
