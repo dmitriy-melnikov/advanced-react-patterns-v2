@@ -51,12 +51,8 @@ const ToggleContext = createContext({
 
 const Toggle = (props) => {
   const [on, setOn] = useState(false)
-
   useEffect(() => props.onToggle(on))
   const toggle = () => setOn(!on)
-  //const [ toggl ] = useState(toggle)
-  //state = {on: false, toggle: this.toggle};
-
   return (
     <ToggleContext.Provider value={{on, toggle}}
     >
