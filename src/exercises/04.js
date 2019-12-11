@@ -1,21 +1,13 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Switch} from '../switch'
 
-class Toggle extends React.Component {
-  state = {on: false};
-  toggle = () =>
-    this.setState(
-      ({on}) => ({on: !on}),
-      () => {
-        this.props.onToggle(this.state.on)
-      },
-    );
-  render() {
-		const {on} = this.state;
-		//return React.createElement(this.props.children, {on, toggle: this.toggle})
-    //return this.props.children({on, toggle: this.toggle})
-    return this.props.render({on, toggle: this.toggle})
-  }
+const Toggle = (props) => {
+  const [on, setOn] = useState(false);
+  useEffect(() => props.onToggle(on));
+  const toggle = () => setOn(!on);
+  return (
+  this.props.render({on, toggle})
+  )
 }
 
 
