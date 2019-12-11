@@ -1,50 +1,20 @@
-import React from 'react'
-import {Switch} from '../switch'
+import React, { useState, useEffect } from 'react'
+import { Switch } from '../switch'
 
-class Toggle extends React.Component {
-  state = {
-    on: false
-  };
-/*
-  onToggle = () => {
-    this.setState(({on}) => ({
-      on: !on
-    }))
-  };*/
-  toggle = () => {
-    this.setState(currentState => {
-      return {
-        on: !currentState.on
-			}
-    }, () => {
-      this.props.onToggle(this.state.on)
-    })
-  };
-
-	/*toggle = () => {
-		this.setState({on: !this.state.on}/!*,
-      () => {
-			this.props.onToggle(this.state.on)
-		}*!/
-		)};*/
-
-  render() {
-    const {on} = this.state;
-    return(
-      <Switch
-        on={on}
-        onClick={this.toggle}
-      />
-    )
-  }
+const Toggle = ({onToggle}) => {
+  const [on, setOn] = useState(false);
+  useEffect(() => {onToggle(on)})
+  const toggle = () => setOn(!on);
+  return (
+    <Switch on={on} onClick={toggle} />
+  )
 }
-
 
 function Usage({
-  onToggle = (...args) => console.log('onToggle', ...args),
-}) {
+                 onToggle = (...args) => console.log('onToggle', ...args),
+               }) {
   return <Toggle onToggle={onToggle} />
 }
-Usage.title = 'Build Toggle';
+Usage.title = 'Build Toggle'
 
 export {Toggle, Usage as default}
