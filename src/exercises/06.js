@@ -11,9 +11,12 @@ const Toggle = (props) => {
   useEffect(() => props.onToggle(on));
   const toggle = () => setOn(!on);
 
-	const getTogglerProps = ({onClick, ...props}) => ({
-		  onClick: callAll(onClick, toggle),
-			'aria-pressed': on,
+	const getTogglerProps = ({onClick,...props}) => ({
+		  onClick: (...args) => {
+		    onClick && onClick(...args)
+        toggle()
+      },
+    'aria-expanded': on,
       ...props
 		});
 
@@ -21,6 +24,10 @@ const Toggle = (props) => {
     return {
       on,
       toggle,
+      togglerProps: {
+        'aria-expanded': on,
+        onClick: toggle
+      },
       getTogglerProps
     }
   };

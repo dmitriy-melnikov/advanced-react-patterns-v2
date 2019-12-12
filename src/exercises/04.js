@@ -42,8 +42,8 @@ function Usage({
     <div>
       {/*<OriginalToggle onToggle={onToggle}/>*/}
 			<Toggle onToggle={onToggle}>
-        {ToggleChild}
-        {/*{props => <ToggleChild {...props} />}*/}
+        {/*{ToggleChild}*/}
+        {props => <ToggleChild {...props} />}
     </Toggle>
       {/*<Toggle onToggle={onToggle}  render={props => <ToggleChild {...props} />} />*/}
     </div>
