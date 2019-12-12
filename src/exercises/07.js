@@ -1,57 +1,50 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {Switch} from '../switch'
 
-const callAll = (...fns) => (...args) =>
-  fns.forEach(fn => fn && fn(...args));
+const callAll = (...fns) => (...args) => fns.forEach(fn => fn && fn(...args))
 
-class Toggle extends React.Component {
-  static defaultProps = {
-    initialOn: false
-  };
+const Toggle = (props) => {
 
-  initialState = {on: this.props.initialOn};
+  //const [on, setOn] = useState(Toggle.initialOn)
+  const [on, setOn] = useState(props.initialOn)
+  const toggle = () => setOn(!on)
+  useEffect(() => props.onToggle(on))
 
-  state = this.initialState;
+  const reset = () => setOn(Toggle.initialOn)
+  useEffect(() => props.onReset(on))
 
-  reset = () => {
-    this.setState(
-      this.initialState,
-      () => this.props.onReset(this.state.on))
-  };
 
-  toggle = () =>
-    this.setState(
-      ({on}) => ({on: !on}),
-      () => this.props.onToggle(this.state.on)
-    );
-
-  getTogglerProps = ({onClick, ...props} = {}) => {
+  const getTogglerProps = ({onClick, ...props} = {}) => {
     return {
-      'aria-pressed': this.state.on,
-      onClick: callAll(onClick, this.toggle),
+      'aria-pressed': on,
+      onClick: callAll(onClick, toggle),
       ...props,
     }
-  };
+  }
 
-  getStateAndHelpers() {
+  const getStateAndHelpers = () => {
     return {
-      on: this.state.on,
-      toggle: this.toggle,
-      reset: this.reset,
-      getTogglerProps: this.getTogglerProps,
+      on,
+      toggle,
+      reset,
+      getTogglerProps,
     }
   }
-  render() {
-    return this.props.children(this.getStateAndHelpers())
-  }
+
+  return props.children(getStateAndHelpers())
+
+}
+
+Toggle.defaultProps = {
+  initialOn: false
 }
 
 
 function Usage({
-  initialOn = false,
-  onToggle = (...args) => console.log('onToggle', ...args),
-  onReset = (...args) => console.log('onReset', ...args),
-}) {
+                 initialOn = false,
+                 onToggle = (...args) => console.log('onToggle', ...args),
+                 onReset = (...args) => console.log('onReset', ...args),
+               }) {
   return (
     <Toggle
       initialOn={initialOn}
@@ -61,13 +54,14 @@ function Usage({
       {({getTogglerProps, on, reset}) => (
         <div>
           <Switch {...getTogglerProps({on})} />
-          <hr />
+          <hr/>
           <button onClick={() => reset()}>Reset</button>
         </div>
       )}
     </Toggle>
   )
 }
+
 Usage.title = 'State Initializers'
 
 export {Toggle, Usage as default}
