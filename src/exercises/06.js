@@ -12,11 +12,12 @@ const Toggle = (props) => {
   const toggle = () => setOn(!on);
 
 	const getTogglerProps = ({onClick,...props}) => ({
-		  onClick: (...args) => {
+    onClick: callAll(onClick, toggle),
+		  /*onClick: (...args) => {
 		    onClick && onClick(...args)
         toggle()
-      },
-    'aria-expanded': on,
+      },*/
+    /*'aria-expanded': on,*/
       ...props
 		});
 
@@ -24,11 +25,12 @@ const Toggle = (props) => {
     return {
       on,
       toggle,
-      togglerProps: {
+      /*togglerProps: {
         'aria-expanded': on,
         onClick: toggle
-      },
-      getTogglerProps
+      },*/
+      getTogglerProps,
+      Button: ({on, getTogglerProps}) => <Switch {...getTogglerProps({on})}/>
     }
   };
 
@@ -43,8 +45,9 @@ function Usage({
 }) {
   return (
     <Toggle onToggle={onToggle}>
-      {({on, getTogglerProps}) => (
+      {({on, getTogglerProps, Button}) => (
         <div>
+          <Button on={on} getTogglerProps={getTogglerProps}/>
           <Switch {...getTogglerProps({on})} />
           <hr />
           <button
