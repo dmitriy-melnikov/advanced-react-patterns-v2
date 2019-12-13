@@ -8,8 +8,11 @@ const callAll = (...fns) => (...args) => fns.forEach(fn => fn && fn(...args));
 
 const Toggle = (props) => {
   const [on, setOn] = useState(false);
-  useEffect(() => props.onToggle(on));
-  const toggle = () => setOn(!on);
+  //useEffect(() => props.onToggle(on));
+  const toggle = () => {
+    setOn(!on);
+    props.onToggle(on)
+  }
 
 	const getTogglerProps = ({onClick,...props}) => ({
     onClick: callAll(onClick, toggle),

@@ -7,12 +7,15 @@ const Toggle = (props) => {
 
   //const [on, setOn] = useState(Toggle.initialOn)
   const [on, setOn] = useState(props.initialOn)
-  const toggle = () => setOn(!on)
-  useEffect(() => props.onToggle(on))
+  const toggle = () => {
+    setOn(!on);
+    props.onToggle(on)
+  }
 
-  const reset = () => setOn(Toggle.initialOn)
-  useEffect(() => props.onReset(on))
-
+  const reset = () => {
+    setOn(false);
+    props.onReset(on)
+  }
 
   const getTogglerProps = ({onClick, ...props} = {}) => {
     return {
