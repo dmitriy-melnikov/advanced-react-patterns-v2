@@ -2,19 +2,22 @@ import React, {useState, useEffect} from 'react'
 import {Switch} from '../switch'
 
 const callAll = (...fns) => (...args) => fns.forEach(fn => fn && fn(...args))
-
+const getInitialState = (args) => args || false;
 const Toggle = (props) => {
 
   //const [on, setOn] = useState(Toggle.initialOn)
-  const [on, setOn] = useState(props.initialOn)
+  const [on, setOn] = useState(getInitialState(props.initialOn))
+  useEffect(() => {
+    props.onToggle(on);
+  },[on])
   const toggle = () => {
-    setOn(!on);
-    props.onToggle(on)
+    setOn((previousOn) => !previousOn);
   }
+
 
   const reset = () => {
     setOn(false);
-    props.onReset(on)
+    props.onReset(getInitialState(props.initialOn))
   }
 
   const getTogglerProps = ({onClick, ...props} = {}) => {
