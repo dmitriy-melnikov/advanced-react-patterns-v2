@@ -1,47 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Switch} from '../switch'
 
-// Here we're going to simplify our component slightly so you
-// can learn the control props pattern in isolation from everything else.
-// Next you'll put the pieces together.
+const  Toggle = (props) => {
+  const [on, setOn] = useState(false);
 
-class Toggle extends React.Component {
-  state = {on: false}
-
-  isControlled = () => {
-    return this.props.on !== undefined
+  const isControlled = () => {
+    return props.on !== undefined
   }
-  getState = () => {
+  const getState = () => {
     return {
-      on: this.isControlled() ? this.props.on : this.state.on
+      on: isControlled() ? props.on : on
     }
   }
 
-  toggle = () => {
-    if (this.isControlled()) {
-      this.props.onToggle(!this.getState().on);
+  const toggle = () => {
+    if (isControlled()) {
+      console.log('is controlled', isControlled())
+      props.onToggle(!getState().on);
     } else {
-    this.setState(
-      ({on}) => ({on: !on}),
-      () => {
-        this.props.onToggle(this.getState().on)
-      },
-    )}
+      console.log('is not controlled - state in on ')
+      setOn(!on);
+      () => props.onToggle(getState().on);
+    }
   }
-  render() {
-    const {on} = this.getState();
-    return <Switch on={on} onClick={this.toggle} />
-  }
-}
 
-// These extra credit ideas are to expand this solution to elegantly handle
-// more state properties than just a single `on` state.
-// 💯 Make the `getState` function generic enough to support all state in
-// `this.state` even if we add any number of properties to state.
-// 💯 Add support for an `onStateChange` prop which is called whenever any
-// state changes. It should be called with `changes` and `state`
-// 💯 Add support for a `type` property in the `changes` you pass to
-// `onStateChange` so consumers can differentiate different state changes.
+  return <Switch on={getState().on} onClick={toggle} />
+
+}
 
 class Usage extends React.Component {
   state = {bothOn: false}
