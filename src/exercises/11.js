@@ -1,6 +1,6 @@
 // The provider pattern
 import React, {Fragment, useState, useContext, createContext, useEffect} from 'react'
-import {Switch} from '../switch'
+import { Switch } from '../switch'
 
 const ToggleContext = createContext({
   on: false,
@@ -14,6 +14,9 @@ const ToggleConsumer = (props) => {
 
 const Toggle = (props) => {
   const [on, setOn] = useState(false);
+  useEffect(() => {
+    props.onToggle(on)
+  }, [on]);
   const toggle = () => setOn(!on);
   return(
       <ToggleContext.Provider value={{on, toggle}} {...props}/>
