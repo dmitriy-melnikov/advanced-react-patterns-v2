@@ -11,7 +11,7 @@ const Toggle = (props) => {
   //useEffect(() => props.onToggle(on));
   const toggle = () => {
     setOn(!on);
-    props.onToggle(on)
+    //props.onToggle(on)
   }
 
 	const getTogglerProps = ({onClick,...props}) => ({

@@ -18,9 +18,9 @@ const  Toggle = (props) => {
       console.log('is controlled', isControlled())
       props.onToggle(!getState().on);
     } else {
-      console.log('is not controlled - state in on ')
+      console.log('is not controlled - state in on ');
       setOn(!on);
-      () => props.onToggle(getState().on);
+      //() => props.onToggle(getState().on);
     }
   }
 
